@@ -1,20 +1,41 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "additionalProperties": false,
   "definitions": {
     "header": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "sender": { "type": "string" },
         "traceId": { "type": "string" },
         "messageTime": { "type": "string", "format": "date-time" }
         },
         "required": ["sender", "traceId", "messageTime" ]
+    },
+    "connectivityStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string" },
+        "ethernet": { "type": "boolean" }, 
+        "wifi": { "type": "boolean" },
+        "eth_ip": { "type": "string" },
+        "wifi_ip": { "type": "string" },
+        "bluetooth": { "type": "boolean" },
+        "existing_connection": { "type": "boolean" },
+        "internet_connection": { "type": "boolean" },
+        "ssid": { "type": "string" },
+        "freq": { "type": "string" },
+        "rssi": { "type": "string" }
+      },
+      "required": ["status", "ethernet", "wifi", "eth_ip", "wifi_ip", "bluetooth", "existing_connection", "internet_connection", "ssid", "freq", "rssi" ]
     }
   },
   "properties": {
     "commonDefinitions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "pubSubTopics": { "enum": ["connectionStatusReportTopic"] },
         "requestsTopics": { "enum": ["connectionStatusRequestTopic","registerWifiRequestTopic","resetWifiRequestTopic"] }
@@ -22,48 +43,70 @@
     },
     "commonResponse": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "status": { "enum": ["succeed","fail"] },
+        "success": { "type": "boolean" },
         "message": { "type": "string" }
       }
     },
     "connectionStatusReport": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "header": {
           "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/header"
+          }
         },
-        "status": { "type": "string" }
+        "status": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/connectivityStatus"
+          }
+        }
       },
-      "required": [ "header", "status" ]
+      "required": ["header", "status"]
     },
     "connectionStatusRequest": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "header": {
           "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/header"
+          }
         }
       },
-      "required": [ "header" ]
+      "required": ["header"]
     },
     "connectionStatusResponse": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "status": { "type": "string" }
+        "status": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/connectivityStatus"
+          }
+        }
       },
-      "required": [ "status" ]
+      "required": ["status"]
     },
     "registerWifiRequest": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "header": {
           "type": "object",
+          "additionalProperties": {
             "$ref": "#/definitions/header"
+          }
         },
         "wifi_credentials": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ssid": { "type": "string" },
             "psk": { "type": "string" },
@@ -72,17 +115,18 @@
           "required": ["ssid", "psk", "forceFlag" ]
         }
       },
-      "required": ["header", "wifi_credentials" ]
+      "required": ["header", "wifi_credentials"]
     },
     "resetWifiRequest": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {        
         "header": {
         "type": "object",
           "$ref": "#/definitions/header"
       }
     },
-      "required": [ "header" ]
+      "required": ["header"]
     }
   }
 }
